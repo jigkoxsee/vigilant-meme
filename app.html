@@ -1,0 +1,133 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8">
+    <title></title>
+    <style>
+      .frame {
+        position: relative;
+        width: 612px;
+        height: 612px;
+        left: 27%;
+        top: 25%;
+        border-style: solid;
+        border-color: black;
+        border-width: 4px;
+        background-color: #428bca;
+      }
+      .tile {
+        position: relative;
+        display: block;
+        float: left;
+        width: 200px;
+        height: 200px;
+        border-style: solid;
+        border-color: black;
+        border-width: 2px;
+        font-size: 100px;
+        text-align: center;
+        vertical-align: middle;
+        line-height: 204px;
+        background-color: #5bc0de;
+        font-family: Arial;
+      }
+    </style>
+  </head>
+  <body>
+
+
+    <!-- playground -->
+    <div style="text-align:center;">
+      <h2 id = "text-info" >Press any key for continue</h2>
+    </div>
+
+    <div class="frame">
+      <div class="tile" id="pos-0">x</div>
+      <div class="tile" id="pos-1">1</div>
+      <div class="tile" id="pos-2">2</div>
+      <div class="tile" id="pos-3">3</div>
+      <div class="tile" id="pos-4">4</div>
+      <div class="tile" id="pos-5">5</div>
+      <div class="tile" id="pos-6">6</div>
+      <div class="tile" id="pos-7">7</div>
+      <div class="tile" id="pos-8">8</div>
+    </div>
+    <br />
+
+    <script src="https://code.jquery.com/jquery-2.1.4.min.js"></script>
+    <script type="text/javascript">
+      // dummy json
+      var dummy_json='{{.Json}}'
+      /*var dummy_json = '{"Init":[0,4,6,3,2,1,5,7,8],"Sequence":[{"Tile":4,"Direction":"L"},{"Tile":2,"Direction":"U"},{"Tile":1,"Direction":"L"},{"Tile":6,"Direction":"D"},{"Tile":2,"Direction":"R"},{"Tile":1,"Direction":"U"},{"Tile":3,"Direction":"R"},{"Tile":5,"Direction":"U"},{"Tile":7,"Direction":"L"},{"Tile":8,"Direction":"L"},{"Tile":6,"Direction":"D"},{"Tile":3,"Direction":"R"},{"Tile":5,"Direction":"R"},{"Tile":4,"Direction":"D"},{"Tile":1,"Direction":"L"},{"Tile":2,"Direction":"L"},{"Tile":3,"Direction":"U"},{"Tile":6,"Direction":"U"}]}';*/
+
+      $( document ).ready(function() {
+          // parse string to json
+          info = JSON.parse(dummy_json);
+          // test
+          console.log(info["Init"][0]);
+          // initial board game
+          for(var i = 0; i < 9; i++){
+            $("#pos-"+i).html(info["Init"][i]);
+            if(info["Init"][i] == 0){
+              	$("#pos-"+i).css("visibility", "hidden");
+            }
+            // change id like the initial format
+            $("#pos-"+i).attr("id", info["Init"][i]);
+          }
+
+          // Try to move on step
+          var step_arr = info["Sequence"];
+          var step_number = info["Sequence"].length;
+          console.log(step_arr.length);
+
+          // step moving action array
+          var action_arr = [];
+          var count_step = 0;
+          var obj_id ;
+          $ ( document ).keypress(function(e) {
+            if(count_step < step_number){
+              obj_id = step_arr[count_step]["Tile"];
+              console.log('tile : '+info["Sequence"][count_step]["Tile"]+', move: '+info["Sequence"][count_step]["Direction"]);
+              tile_move(obj_id, step_arr[count_step]["Direction"])
+              count_step++;
+              if(count_step == step_number){
+                $('#text-info').html(" Success !! ");
+                $('#text-info').css('color', 'green');
+              }
+            }
+          });
+      });
+
+
+
+      // move position
+      function tile_move(id, pos){
+        var move_params = {};
+        switch (pos) {
+          case 'R':
+            pos = "right";
+            opt = "-"
+            break;
+          case 'L':
+            pos = "right"
+            opt = "+"
+            break;
+          case 'U':
+            pos = "top";
+            opt = "-"
+            break;
+          case 'D':
+            pos = "top";
+            opt = "+"
+            break;
+          default:
+        }
+        console.log(id+pos);
+
+        move_params[pos] = opt+"=204";
+        $( "#"+id ).animate( move_params, 800);
+      }
+
+    </script>
+  </body>
+</html>
